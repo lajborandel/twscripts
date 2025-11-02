@@ -2,6 +2,6 @@
   "enabled": true,
   "min_version": "2025-11-02-01",
   "allowed_keys": [
-    "sem"
+    "u_demo_001"
   ]
 }
