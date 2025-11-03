@@ -13,7 +13,7 @@
   const SCRIPT_ID = "autobuild";
   const CONFIG_B64 = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xhamJvcmFuZGVsL3R3c2NyaXB0cy9yZWZzL2hlYWRzL21haW4vY29uZmlnLmpzb24=";
   const CONFIG_URL = atob(CONFIG_B64);
-  const ACCESS_KEY = window.__ACCESS_KEY__ || "NEURCEN";
+  const ACCESS_KEY = window.__ACCESS_KEY__ || "u_demo_001";
 
   function loadCore(url_b64, ver) {
     const MAIN_URL = atob(url_b64);
