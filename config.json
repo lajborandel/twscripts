@@ -21,7 +21,7 @@
     },
     "farmcreload": {
       "enabled": true,
-      "core_version": "1.2",
+      "core_version": "2.6",
       "core_url_b64": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xhamJvcmFuZGVsL3R3c2NyaXB0cy9yZWZzL2hlYWRzL21haW4vZmFybUNyZWxvYWQuanM="
     },
     "razenimince": {
