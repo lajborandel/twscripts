@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         TribalWars AutoBuild (FUNKCNI + UI + Priorita dolů + Auto Sklad/Selský dvůr) FUNGUJE
 // @namespace    @lajbor
-// @version      2.7-ui-fix
-// @description  Opravená verze s funkčním UI panelem a prioritami.
+// @version      2.7-loader-fix-final
+// @description  Opravená verze s funkčním UI panelem a prioritami (včetně fixu spouštění přes Loader).
 // @match        *://*/game.php*screen=main*
 // @grant        none
 // ==/UserScript==
@@ -73,15 +73,12 @@
     }
 
     // ===== UI PANEL A AKTUÁLNÍ ÚROVNĚ =====
-    // TATO FUNKCE BYLA JEDNOU Z MOŽNÝCH PŘÍČIN PROBLÉMŮ!
     function getLevelsSnapshot(buildKey) {
-        // Nejlepší zjištění úrovně je z elementu .level v řádku tabulky
         const lvlNode = document.querySelector(`#main_buildrow_${buildKey} .level`);
         if (lvlNode) {
             const m = lvlNode.textContent.match(/\d+/);
             const cur = m ? asInt(m[0], 0) : 0;
             
-            // Zjištění úrovně z tlačítka "Postavit" je méně spolehlivé, ale jako fallback
             const btn = document.querySelector(`a.btn.btn-build[data-building="${buildKey}"]`);
             if (btn) {
                 const next = asInt(btn.getAttribute('data-level-next'), cur + 1);
@@ -94,10 +91,9 @@
     }
 
     function renderControlPanel() {
-        const host = document.querySelector('#content_value'); // Spolehlivější cíl
-        const buildQueue = document.getElementById('buildqueue'); // Místo, kde se obvykle chceme zobrazit
+        const host = document.querySelector('#content_value');
+        const buildQueue = document.getElementById('buildqueue');
         
-        // Zkontrolujeme, zda jsme na správné stránce a zda už panel neexistuje
         if (!host || document.getElementById('tw-ab-ui-panel')) return;
 
         const settings = ensureSettings();
@@ -148,11 +144,9 @@
 
         panel.appendChild(table);
         
-        // Vložení panelu PŘED nebo PO frontě, ale uvnitř #content_value
         if (buildQueue && buildQueue.parentNode) {
             buildQueue.parentNode.insertBefore(panel, buildQueue);
         } else {
-             // Fallback, pokud není fronta, vložíme na začátek #content_value
              host.insertBefore(panel, host.firstChild);
         }
     }
@@ -168,7 +162,6 @@
 
     function isBuildQueueFull() {
         const queueRows = document.querySelectorAll('#buildqueue tr');
-        // Většinou je tam jedna hlavička, tak kontrolujeme délku > MAX_QUEUE_LENGTH
         const count = queueRows.length - 1;
         return count >= MAX_QUEUE_LENGTH;
     }
@@ -274,18 +267,21 @@
 
     // Stabilní spuštění po načtení DOMu
     function init() {
-        // Kontrola, zda jsme na hlavní stránce budovy (dle existence klíčových prvků)
-        if (document.getElementById('main_buildrow_wood') || document.getElementById('buildqueue')) {
-            renderControlPanel();
-            log("✅ Stránka hlavní budovy načtena. Spouštím smyčku.");
-            startLoop();
-        } else {
-             // Fallback pro případ, že se stránka načítá pomalu
-             console.log("Waiting for build elements...");
-             setTimeout(init, 500);
-        }
+        // Použijeme zpoždění 500ms, aby měl DOM čas se vykreslit po spuštění Loaderem
+        setTimeout(function() {
+            // Kontrola, zda jsme na hlavní stránce budovy (dle existence klíčových prvků)
+            if (document.getElementById('main_buildrow_wood') || document.getElementById('buildqueue')) {
+                renderControlPanel();
+                log("✅ Stránka hlavní budovy načtena. Spouštím smyčku.");
+                startLoop();
+            } else {
+                 // Fallback pro případ, že se stránka načítá pomalu
+                 console.log("Waiting for build elements...");
+                 setTimeout(init, 1500); // Delší čekání, pokud se nenačte hned
+            }
+        }, 500); // <-- Klíčové zpoždění pro Loader
     }
 
-    // Spustí init, jakmile je DOM připraven (což by se stalo hned díky @run-at document-end)
+    // Spustí init
     init();
 })();
