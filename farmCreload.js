@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         C – pomocník (Refresh Switch + UI) FUNKCNI
 // @namespace    farm C prepinani vesnic by Lajbor
-// @version      2.6 // Zvýšena verze pro zaručenou aktualizaci!
+// @version      2.7 // FINÁLNÍ OPRAVA Zobrazení UI
 // @description  Bezpečné postupné klikání na „C“ v AM Farm; vynechá napadené řádky; auto-přepínání vesnic s UI.
 // @match        https://*/game.php*screen=am_farm*
 // @grant        none
@@ -9,19 +9,6 @@
 
 (function () {
   'use strict';
-
-  // ==========================================================
-  // === KRITICKÁ OPRAVA PRO LOADER: MANUÁLNÍ KONTROLA URL ===
-  // Zajišťuje, že se kód nespustí na každé stránce (což Loader dělá)
-  if (
-        !window.location.href.includes('screen=am_farm') || 
-        !document.body.id.includes('am_farm')
-    ) {
-    // Kontrola jak URL, tak ID těla stránky pro maximální spolehlivost
-    return;
-  }
-  // ==========================================================
-
 
   // --- Pevné/Výchozí Nastavení ---
   const MAX_CLICKS = 100;
@@ -34,7 +21,7 @@
 
   const AUTO_SWITCH = true;
 
-  const LOG_PREFIX = '[AM-FARM V2.6]'; // Změna verze v logu
+  const LOG_PREFIX = '[AM-FARM V2.7]';
 
   // --- Nastavení pro UI a Switch (persistují v localStorage) ---
   const SWITCH_STORAGE_KEY = 'farm_c_switch_interval';
@@ -88,9 +75,15 @@
   }
 
   function createSettingsUI() {
+    // KRITICKÁ KONTROLA STRÁNKY PŘED TVORBOU UI
     const mainContent = byQS('#content_value');
-    if (!mainContent) return;
-
+    // Kontrolujeme, jestli existuje element, který je specifický pro rabovacího pomocníka
+    if (!mainContent || !byQS('#plunder_list')) {
+        // Pokud nejsme na správné stránce, UI se nevytvoří.
+        return;
+    }
+    // KONTROLA PROŠLA
+    
     const container = document.createElement('div');
     container.id = 'farm_switch_ui_v2';
     container.style.cssText = 'border: 1px solid #C0C0C0; padding: 5px; margin-top: 5px; margin-bottom: 5px; background: #f0e6c8; display: flex; align-items: center; gap: 10px; font-size: 11px; flex-wrap: wrap;';
