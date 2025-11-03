@@ -4,7 +4,7 @@
 // @version      1.0
 // @description  Nacita aktualni verzi skriptu AutoBuild 
 // @author       Lajbor
-// @match        https://www.twscript.eu/
+// @match        *://*/*
 // @run-at       document-end
 // @grant        none
 // ==/UserScript==
