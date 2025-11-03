@@ -1,9 +1,8 @@
 // ==UserScript==
 // @name         TribalWars AutoBuild (FUNKCNI + UI + Priorita dolů + Auto Sklad/Selský dvůr) FUNGUJE
 // @namespace    @lajbor
-// @version      2.7-loader-fix-final
+// @version      2.7-ultimate-fix
 // @description  Opravená verze s funkčním UI panelem a prioritami (včetně fixu spouštění přes Loader).
-// @match        *://*/game.php*screen=main*
 // @grant        none
 // ==/UserScript==
 
@@ -269,15 +268,18 @@
     function init() {
         // Použijeme zpoždění 500ms, aby měl DOM čas se vykreslit po spuštění Loaderem
         setTimeout(function() {
-            // Kontrola, zda jsme na hlavní stránce budovy (dle existence klíčových prvků)
+            // Kontrola, zda jsme na stránce Hlavní budovy a zda jsou načteny klíčové prvky
             if (document.getElementById('main_buildrow_wood') || document.getElementById('buildqueue')) {
                 renderControlPanel();
                 log("✅ Stránka hlavní budovy načtena. Spouštím smyčku.");
                 startLoop();
             } else {
-                 // Fallback pro případ, že se stránka načítá pomalu
-                 console.log("Waiting for build elements...");
-                 setTimeout(init, 1500); // Delší čekání, pokud se nenačte hned
+                 // Fallback pro případ, že se stránka načítá pomalu, nebo nejsme na screen=main
+                 console.log("Waiting for build elements or not on main screen. Waiting...");
+                 // Zkusíme to znova, jen pokud jsme na screen=main (URL kontrola)
+                 if (window.location.href.includes('screen=main')) {
+                    setTimeout(init, 1500);
+                 }
             }
         }, 500); // <-- Klíčové zpoždění pro Loader
     }
