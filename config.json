@@ -1,12 +1,12 @@
 {
   "allowed_keys": [
     "u_demo_001", 
-    "u_tve_jmeno" // <--- Doplň své access klíče
+    "u_tve_jmeno" 
   ],
   "scripts": {
     "autobuild": {
       "enabled": true,
-      "core_version": "1.0.0", // Zvyšovat při aktualizaci kódu!
+      "core_version": "1.0.0",
       "core_url_b64": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xhamJvcmFuZGVsL3R3c2NyaXB0cy9yZWZzL2hlYWRzL21haW4vYXV0b2J1aWxkX2NvcmUuanM="
     },
     "chytanislechty": {
