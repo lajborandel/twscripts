@@ -1,14 +1,23 @@
 // ==UserScript==
-// @name         C – pomocník (Refresh Switch + UI) FUNKCNI
-// @namespace    farm C prepinani vesnic by Lajbor
-// @version      2.4 // Přidán checkbox pro Auto-Refresh a počítadlo zbývajících cílů v UI.
-// @description  Bezpečné postupné klikání na „C“ v AM Farm; vynechá napadené řádky; auto-přepínání vesnic s UI.
-// @match        https://*/game.php*screen=am_farm*
-// @grant        none
+// @name         C – pomocník (Refresh Switch + UI) FUNKCNI
+// @namespace    farm C prepinani vesnic by Lajbor
+// @version      2.5 // Zvýšena verze pro spolehlivé spuštění z Loaderu
+// @description  Bezpečné postupné klikání na „C“ v AM Farm; vynechá napadené řádky; auto-přepínání vesnic s UI.
+// @match        https://*/game.php*screen=am_farm*
+// @grant        none
 // ==/UserScript==
 
 (function () {
   'use strict';
+
+  // ===============================================
+  // === OPRAVA PRO LOADER (Code Injection) ===
+  // Loader spouští kód všude, proto je nutná manuální kontrola.
+  if (!window.location.href.includes('screen=am_farm')) {
+    // console.log('[Farm C] Spuštěn, ale není na am_farm. Ukončuji.'); 
+    return;
+  }
+  // ===============================================
 
   // --- Pevné/Výchozí Nastavení ---
   const MAX_CLICKS = 100;
@@ -21,7 +30,7 @@
 
   const AUTO_SWITCH = true;
 
-  const LOG_PREFIX = '[AM-FARM V2.4]';
+  const LOG_PREFIX = '[AM-FARM V2.5]';
 
   // --- Nastavení pro UI a Switch (persistují v localStorage) ---
   const SWITCH_STORAGE_KEY = 'farm_c_switch_interval';
@@ -50,7 +59,6 @@
   const clickSafely = (el) => {
     try {
       el.click();
-      // Po úspěšném kliku aktualizujeme počítadlo
       clickedCount++;
       updateTargetCounterUI();
       return true;
@@ -186,13 +194,13 @@
       if (usable.length >= MAX_CLICKS) break;
     }
 
-    totalButtons = usable.length; // Uložíme celkový počet cílů pro počítadlo
+    totalButtons = usable.length;
     return usable;
   }
 
   function runClicks() {
     const buttons = collectButtons();
-    updateTargetCounterUI(); // Inicializace počítadla
+    updateTargetCounterUI();
 
     if (!buttons.length) {
       console.log(LOG_PREFIX, 'Nic k odeslání (žádná povolená „C“).');
